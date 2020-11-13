@@ -10,7 +10,11 @@ function hierarchy(operator) {
     if(operator.match(/^[\(|\)]$/)){
         resp = 1;
     }else if( operator.match(/(^(?!.)*)(&&|\|\|)(?!.)/)){
-        resp = 2;
+        if (operator === '&&') {
+            resp = 2.1;
+        } else if (operator === '||') {
+            resp = 2.2;
+        }
     }else if( operator.match(/(^(?!.)*)(<|>|<=|>=|\!=|\=\=)(?!.)/)){
         resp = 3;
     }else if( operator.match(/^[\+|\-]$/)){

@@ -6,7 +6,7 @@ const PrefixController = require('../controller/prefix');
 
 const router = express.Router();
 
-router.post('/triplo', PrefixController.getPrefix);
+router.post('/prefix', PrefixController.getPrefix);
 
 // direccion/triplo
 
