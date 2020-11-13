@@ -6,6 +6,14 @@ const getPrefix = (req, res) => {
     try{
         const body = req.body;
         const { lexemes } = body;
+
+        if (!lexemes || lexemes.length === 0) {
+            throw new Error({
+                status: 400,
+                message: 'Lexemes array dont was send'
+            })
+        }
+
         const prefixArray = getPrefixArr(lexemes);
         
         return res.status(200).json({
@@ -14,11 +22,12 @@ const getPrefix = (req, res) => {
             },
             ok: true
         });
+        
     } catch(err) {
-        console.log(err);
-        return res.status(500).send({
+        const { status = 500, message = 'Internal Server Error'} = err;
+        return res.status(status).send({
             ok: false,
-            message: 'Internal Server Error'
+            message
         })
     }
     
