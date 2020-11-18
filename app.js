@@ -5,7 +5,7 @@ const cors = require('cors');
 const app = express();
 
 const prefixRoute = require('./app/routes/prefix');
-const triploRoute = require('./app/routes/triplo')
+const triploRoute = require('./app/routes/triplo');
 
 app.use(express.urlencoded({extended: false}));
 app.use(express.json());
