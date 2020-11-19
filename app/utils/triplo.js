@@ -20,7 +20,6 @@ const triplo = (prefix) => {
             triplo.push(aux);
             prefix.shift();
         }
-
         return triplo;
     } catch(err) {
         throw new Error(err);
@@ -45,7 +44,6 @@ const iterator = (prefix, start) => {
     const context = operators[0].context;
     while(operators.length > 0) {
         op1 = operators.pop();
-        console.log(op1);
         if(operators.length === 0) {
             const {triplos, body} = bodyWhile(prefix, context);
 
@@ -124,9 +122,6 @@ const iterator = (prefix, start) => {
             counterCond++;
             end++;
         }
-        
-        
-
     }
 
     return triplo;
@@ -139,20 +134,26 @@ const iterator = (prefix, start) => {
  */
 const bodyWhile = (prefix, context) => {
     const body = [];
-    const auxPrefix = {...prefix};
+    const auxPrefix = [...prefix];
     let triplos = [];
 
     for(let i = 0; i < prefix.length; i++) {
         const token = auxPrefix.shift();
 
-        if(token.context === context) {
+        if(token[0].context === context) {
             body.push(token);
         } else {
             break;
         }
     }
-    
-    triplos = assignation(body);
+
+    console.log(body);
+    for(let i = 0; i < body.length; i++) {
+        const resp = assignation(body[i]);
+
+        triplos.push(resp);
+    }
+
     prefix = auxPrefix;
     return {triplos, body};
 }
@@ -162,77 +163,78 @@ const bodyWhile = (prefix, context) => {
  * @param {Array} prefix - array what represents the line code
  * @return {Array} triplo - array with the tiplo of the line
  */
-
 const assignation = (prefix) => {
-    let auxs = [];
-    let contador = 1;
-    let triplo = [];
-    let newTriplo = {};
-    let nextOp;
-    for(let i = prefix.length-1; i >= 0; i--) {
-        let last = prefix[i];
-        newTriplo = {
-            from: last.lexeme,
-            to: `T${contador}`,
-            op: '='
-        }
-        triplo.push(newTriplo);
-        auxs.push(newTriplo);
-        prefix.splice(i, 1);
-        i = prefix.length - 1;
-        contador++;
-        let before = prefix[i-1];
-        if(before.id === 'ID') {
-            for(let j = i-1; j >= 0; j--) {
-                if(prefix[j].id === 'AS' || prefix[j].id === 'OA') {
-                    nextOp = prefix[j];
-                    prefix.splice(i, 1);
-                    i = prefix.length - 1;
-                    break;
-                }
-            }
+    // let auxs = [];
+    // let contador = 1;
+    // let triplo = [];
+    // let newTriplo = {};
+    // let nextOp;
+    // for(let i = prefix.length-1; i >= 0; i--) {
+    //     let last = prefix[i];
+    //     newTriplo = {
+    //         from: last.lexeme,
+    //         to: `T${contador}`,
+    //         op: '='
+    //     }
+    //     triplo.push(newTriplo);
+    //     auxs.push(newTriplo);
+    //     prefix.splice(i, 1);
+    //     i = prefix.length - 1;
+    //     contador++;
+    //     let before = prefix[i-1];
+    //     if(before.id === 'ID') {
+    //         for(let j = i-1; j >= 0; j--) {
+    //             if(prefix[j].id === 'AS' || prefix[j].id === 'OA') {
+    //                 nextOp = prefix[j];
+    //                 prefix.splice(i, 1);
+    //                 i = prefix.length - 1;
+    //                 break;
+    //             }
+    //         }
 
-            if(nextOp === 'AS') {
-                newTriplo = {
-                    from: auxs[0].to,
-                    to: nextOp.lexeme,
-                    op: nextOp.lexeme
-                }
-                triplo.push(newTriplo);
-            } else {
-                if (auxs.length > 1) {
-                    for(let j = i-1; j >= 0; j--) {
-                        if(prefix[j].id === 'OA') {
-                            nextOp = prefix[j];
-                            prefix.splice(i, 1);
-                            i = prefix.length - 1;
-                            break;
-                        }
-                    }
-                    newTriplo = {
-                        from: auxs[0].to,
-                        to: auxs[1].to,
-                        op: nextOp.lexeme
-                    }
-                    triplo.push(newTriplo);
-                    auxs.splice(0,1);
-                } else{
-                    newTriplo = {
-                        from: auxs[auxs.length - 1 ],
-                        to: before.lexeme,
-                        op: nextOp.lexeme
-                    }
+    //         if(nextOp === 'AS') {
+    //             newTriplo = {
+    //                 from: auxs[0].to,
+    //                 to: nextOp.lexeme,
+    //                 op: nextOp.lexeme
+    //             }
+    //             triplo.push(newTriplo);
+    //         } else {
+    //             if (auxs.length > 1) {
+    //                 for(let j = i-1; j >= 0; j--) {
+    //                     if(prefix[j].id === 'OA') {
+    //                         nextOp = prefix[j];
+    //                         prefix.splice(i, 1);
+    //                         i = prefix.length - 1;
+    //                         break;
+    //                     }
+    //                 }
+    //                 newTriplo = {
+    //                     from: auxs[0].to,
+    //                     to: auxs[1].to,
+    //                     op: nextOp.lexeme
+    //                 }
+    //                 triplo.push(newTriplo);
+    //                 auxs.splice(0,1);
+    //             } else{
+    //                 newTriplo = {
+    //                     from: auxs[auxs.length - 1 ],
+    //                     to: before.lexeme,
+    //                     op: nextOp.lexeme
+    //                 }
 
-                    triplo.push(newTriplo);
-                    prefix.splice(i, 1);
-                    auxs.push(newTriplo);
-                    i = prefix.length - 1;
-                }
-            }
-        } else if(before.id === 'AS') {
+    //                 triplo.push(newTriplo);
+    //                 prefix.splice(i, 1);
+    //                 auxs.push(newTriplo);
+    //                 i = prefix.length - 1;
+    //             }
+    //         }
+    //     } else if(before.id === 'AS') {
 
-        }
-    }
+    //     }
+    // }
+
+    
 
     return triplo;
 }
