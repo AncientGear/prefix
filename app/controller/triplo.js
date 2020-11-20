@@ -13,7 +13,7 @@ const getTriplo = (req, res) => {
         const body = req.body;
         const { prefix } = body;
         const triploArr = triplo(prefix);
-
+        console.log('3');
         return res.status(200).send({
             ok: true,
             triploArr

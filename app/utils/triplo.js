@@ -11,13 +11,14 @@ const triplo = (prefix) => {
         while(prefix.length > 0) {
             let line = prefix[0];
             let aux;
+            
             if (line[0].id === 'OR') {
                 aux = iterator(prefix, triplo.length);
             } else{
                 aux = assignation(line);
             }
             
-            triplo.push(aux);
+            triplo = triplo.concat(aux);
             prefix.shift();
         }
         return triplo;
@@ -45,32 +46,40 @@ const iterator = (prefix, start) => {
     while(operators.length > 0) {
         op1 = operators.pop();
         if(operators.length === 0) {
-            const {triplos, body} = bodyWhile(prefix, context);
+            const {triplos} = bodyWhile(prefix, context);
 
             triplo = triplo.concat(triplos);
-            end = end + body.length;
-        }
+            end = end + triplos.length;
 
-        if(op1.lexeme === '||') {
-            const or1 = auxOps.shift();
-            const or2 = auxOps.shift();
-            const or3 = auxOps.shift();
-            const or4 = auxOps.shift();
+            newTriplo = {
+                from: 'JMP',
+                to: '',
+                op: start
+            }
+            triplo.push(newTriplo);
+            end++;
 
-            or1.op = or4.pos;
-            or2.op = or3.pos-1;
-            or3.op = or4.pos;
-            or4.op = end;
-        } else if(op1.lexeme === '&&'){
-            const or1 = auxOps.shift();
-            const or2 = auxOps.shift();
-            const or3 = auxOps.shift();
-            const or4 = auxOps.shift();
-
-            or1.op = or3.pos-1;
-            or2.op = end;
-            or3.op = or4.pos;
-            or4.op = end;
+            if(op1.lexeme === '||') {
+                const or1 = auxOps.shift();
+                const or2 = auxOps.shift();
+                const or3 = auxOps.shift();
+                const or4 = auxOps.shift();
+    
+                or1.op = or4.pos+1;
+                or2.op = or2.pos+1;
+                or3.op = or4.pos+1;
+                or4.op = end;
+            } else if(op1.lexeme === '&&'){
+                const or1 = auxOps.shift();
+                const or2 = auxOps.shift();
+                const or3 = auxOps.shift();
+                const or4 = auxOps.shift();
+    
+                or1.op = or3.pos;
+                or2.op = end;
+                or3.op = or4.pos;
+                or4.op = end;
+            } 
         } else {
             op2 = operators.pop();
             op3 = operators.pop();
@@ -105,7 +114,7 @@ const iterator = (prefix, start) => {
                 from: 'TRUE',
                 to: `TR${counterCond}`,
                 op: undefined,
-                pos: triplo.length + 1
+                pos: end
             }
             auxOps.push(newTriplo);
             triplo.push(newTriplo);
@@ -115,7 +124,7 @@ const iterator = (prefix, start) => {
                 from: 'FALSE',
                 to: `TR${counterCond}`,
                 op: undefined,
-                pos: triplo.length + 1
+                pos: end    
             }
             auxOps.push(newTriplo);
             triplo.push(newTriplo);
@@ -147,15 +156,14 @@ const bodyWhile = (prefix, context) => {
         }
     }
 
-    console.log(body);
     for(let i = 0; i < body.length; i++) {
         const resp = assignation(body[i]);
 
-        triplos.push(resp);
+        triplos = triplos.concat(resp);
     }
 
     prefix = auxPrefix;
-    return {triplos, body};
+    return {triplos};
 }
 
 /**
@@ -164,77 +172,91 @@ const bodyWhile = (prefix, context) => {
  * @return {Array} triplo - array with the tiplo of the line
  */
 const assignation = (prefix) => {
-    // let auxs = [];
-    // let contador = 1;
-    // let triplo = [];
-    // let newTriplo = {};
-    // let nextOp;
-    // for(let i = prefix.length-1; i >= 0; i--) {
-    //     let last = prefix[i];
-    //     newTriplo = {
-    //         from: last.lexeme,
-    //         to: `T${contador}`,
-    //         op: '='
-    //     }
-    //     triplo.push(newTriplo);
-    //     auxs.push(newTriplo);
-    //     prefix.splice(i, 1);
-    //     i = prefix.length - 1;
-    //     contador++;
-    //     let before = prefix[i-1];
-    //     if(before.id === 'ID') {
-    //         for(let j = i-1; j >= 0; j--) {
-    //             if(prefix[j].id === 'AS' || prefix[j].id === 'OA') {
-    //                 nextOp = prefix[j];
-    //                 prefix.splice(i, 1);
-    //                 i = prefix.length - 1;
-    //                 break;
-    //             }
-    //         }
-
-    //         if(nextOp === 'AS') {
-    //             newTriplo = {
-    //                 from: auxs[0].to,
-    //                 to: nextOp.lexeme,
-    //                 op: nextOp.lexeme
-    //             }
-    //             triplo.push(newTriplo);
-    //         } else {
-    //             if (auxs.length > 1) {
-    //                 for(let j = i-1; j >= 0; j--) {
-    //                     if(prefix[j].id === 'OA') {
-    //                         nextOp = prefix[j];
-    //                         prefix.splice(i, 1);
-    //                         i = prefix.length - 1;
-    //                         break;
-    //                     }
-    //                 }
-    //                 newTriplo = {
-    //                     from: auxs[0].to,
-    //                     to: auxs[1].to,
-    //                     op: nextOp.lexeme
-    //                 }
-    //                 triplo.push(newTriplo);
-    //                 auxs.splice(0,1);
-    //             } else{
-    //                 newTriplo = {
-    //                     from: auxs[auxs.length - 1 ],
-    //                     to: before.lexeme,
-    //                     op: nextOp.lexeme
-    //                 }
-
-    //                 triplo.push(newTriplo);
-    //                 prefix.splice(i, 1);
-    //                 auxs.push(newTriplo);
-    //                 i = prefix.length - 1;
-    //             }
-    //         }
-    //     } else if(before.id === 'AS') {
-
-    //     }
-    // }
-
+    let auxs = [];
+    let cont = 0;
+    let newTriplo = {};
+    let triplo = [];
     
+    prefix = prefix.reverse();
+
+    while(prefix.length != 0) {
+        let operator1=0, operator2=0, operating=0;
+        for(let i = 0; i < prefix.length; i++) {
+            if(prefix[i].id === 'OA') {
+                operating = prefix[i];
+                operator1 = prefix[i-1] || undefined;
+                operator2 = prefix[i-2] || undefined;
+
+                prefix.splice(i, 1);
+                if(operator1 !== undefined) {
+                    prefix.splice(i-1, 1);
+                }
+
+                if(operator2 !== undefined) {
+                    prefix.splice(i-2, 1);
+                }
+                break;
+            } else if(prefix[i].id === 'AS') {
+                operating = prefix[i];
+                operator1 = prefix[i-1] || undefined;
+                prefix.splice(i, 1);
+                if(operator1 !== undefined) {
+                    prefix.splice(i-1, 1);
+                }
+                break;
+            }
+        }
+        if(operating.id === 'OA') {
+            if(operator1 !== undefined && operator2 === undefined) {
+                cont++;
+                newTriplo = {
+                    from: operator1.lexeme,
+                    to: `T${cont}`,
+                    op: '='
+                }
+
+                triplo.push(newTriplo);
+
+                const lastOp = auxs.pop();
+
+                newTriplo = {
+                    from: lastOp.to,
+                    to: `T${cont}`,
+                    op: operating.lexeme
+                }
+                triplo.push(newTriplo);
+                auxs.push(newTriplo);
+            } else if(operator1 !== undefined && operator2 !== undefined) {
+                cont++;
+
+                newTriplo = {
+                    from: operator1.lexeme,
+                    to: `T${cont}`,
+                    op: '='
+                }
+                triplo.push(newTriplo);
+
+                newTriplo = {
+                    from: operator2.lexeme,
+                    to: `T${cont}`,
+                    op: operating.lexeme
+                }
+                triplo.push(newTriplo);
+                auxs.push(newTriplo);
+            }
+        } else if (operating.id === 'AS') {
+            const aux = auxs.pop();
+            newTriplo = {
+                from: aux.to,
+                to: operator1.lexeme,
+                op: operating.lexeme
+            }
+
+            triplo.push(newTriplo);
+            break;
+        }
+    }
+
 
     return triplo;
 }

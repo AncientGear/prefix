@@ -18,7 +18,7 @@ function hierarchy(operator) {
     }else if( operator.match(/(^(?!.)*)(\*|\/|\%)(?!.)/)){
         resp = 5;
     }else if( operator.match(/^[\=]$/)){
-        resp = 0;
+        resp = 0    ;
     }
 
     return resp;
@@ -27,7 +27,7 @@ function hierarchy(operator) {
 /**
  * @description - 
  * @param {Array} lexemes array with the lexemes
- * @return {Array} results - Array with the prefix
+ * @return {Array} results - Array with the prefix  
  */
 
 function toPrefix(lexemes) {
