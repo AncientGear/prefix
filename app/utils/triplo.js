@@ -108,7 +108,6 @@ const iterator = (prefix, start) => {
                 op: op3.lexeme
             };
             triplo.push(newTriplo);
-            counter++;
             end++;
 
             newTriplo = {
