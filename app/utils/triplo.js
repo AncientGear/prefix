@@ -265,6 +265,8 @@ const assignation = (prefix) => {
                     to: operator2.lexeme,
                     op: operating.lexeme
                 }
+
+                triplo.push(newTriplo);
             }
             band = false;
         }
