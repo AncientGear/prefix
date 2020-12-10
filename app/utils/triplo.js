@@ -56,7 +56,8 @@ const iterator = (prefix, start) => {
             newTriplo = {
                 from: 'JMP',
                 to: '',
-                op: start
+                op: start,
+                id: 'JMP'
             }
             triplo.push(newTriplo);
             end++;
@@ -88,7 +89,8 @@ const iterator = (prefix, start) => {
             newTriplo = {
                 from: op1.lexeme,
                 to: `T${counter}`,
-                op: '='
+                op: '=',
+                id: 'AS'
             };
             triplo.push(newTriplo);
             counter++;
@@ -97,7 +99,8 @@ const iterator = (prefix, start) => {
             newTriplo = {
                 from: op2.lexeme,
                 to: `T${counter}`,
-                op: '='
+                op: '=',
+                id: 'AS'
             };
             triplo.push(newTriplo);
             counter++;
@@ -105,7 +108,8 @@ const iterator = (prefix, start) => {
             newTriplo = {
                 from: triplo[triplo.length - 2].to,
                 to: triplo[triplo.length - 1].to,
-                op: op3.lexeme
+                op: op3.lexeme,
+                id: op3.id
             };
             triplo.push(newTriplo);
             end++;
@@ -114,7 +118,8 @@ const iterator = (prefix, start) => {
                 from: 'TRUE',
                 to: `TR${counterCond}`,
                 op: undefined,
-                pos: end
+                pos: end,
+                id: 'TR'
             }
             auxOps.push(newTriplo);
             triplo.push(newTriplo);
@@ -123,7 +128,8 @@ const iterator = (prefix, start) => {
                 from: 'FALSE',
                 to: `TR${counterCond}`,
                 op: undefined,
-                pos: end
+                pos: end,
+                id: 'TR'
             }
             auxOps.push(newTriplo);
             triplo.push(newTriplo);
@@ -210,7 +216,8 @@ const assignation = (prefix) => {
                 newTriplo = {
                     from: operator1.lexeme,
                     to: `T${cont}`,
-                    op: '='
+                    op: '=',
+                    id: 'AS'
                 }
                 triplo.push(newTriplo);
                 const lastOp = auxs.pop();
@@ -218,7 +225,8 @@ const assignation = (prefix) => {
                 newTriplo = {
                     from: lastOp.to,
                     to: `T${cont}`,
-                    op: operating.lexeme
+                    op: operating.lexeme,
+                    id: operating.id
                 }
                 triplo.push(newTriplo);
                 auxs.push(newTriplo);
@@ -228,14 +236,16 @@ const assignation = (prefix) => {
                 newTriplo = {
                     from: operator1.lexeme,
                     to: `T${cont}`,
-                    op: '='
+                    op: '=',
+                    id: 'AS'
                 }
                 triplo.push(newTriplo);
 
                 newTriplo = {
                     from: operator2.lexeme,
                     to: `T${cont}`,
-                    op: operating.lexeme
+                    op: operating.lexeme,
+                    id: operating.id
                 }
                 triplo.push(newTriplo);
                 auxs.push(newTriplo);
@@ -246,7 +256,8 @@ const assignation = (prefix) => {
                 newTriplo = {
                     from: aux.to,
                     to: operator1.lexeme,
-                    op: operating.lexeme
+                    op: operating.lexeme,
+                    id: operating.id
                 }
                 triplo.push(newTriplo);
             } else {
@@ -254,7 +265,8 @@ const assignation = (prefix) => {
                 newTriplo = {
                     from: operator2.lexeme,
                     to: `T${cont}`,
-                    op: '='
+                    op: '=',
+                    id: 'AS'
                 }
 
                 triplo.push(newTriplo);
@@ -263,7 +275,8 @@ const assignation = (prefix) => {
                 newTriplo = {
                     from: operator1.lexeme,
                     to: operator2.lexeme,
-                    op: operating.lexeme
+                    op: operating.lexeme,
+                    id: operating.id
                 }
 
                 triplo.push(newTriplo);
