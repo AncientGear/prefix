@@ -137,6 +137,7 @@ const iterator = (prefix, start) => {
             end++;
         }
     }
+    console.log(triplo);
     return triplo;
 }
 /**
@@ -182,8 +183,6 @@ const assignation = (prefix) => {
     let band = true;
 
     prefix = prefix.reverse();
-
-    console.log(prefix);
 
     while (prefix.length !== 0 && band) {
         let operator1 = 0, operator2 = 0, operating = 0;
