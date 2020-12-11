@@ -183,6 +183,8 @@ const assignation = (prefix) => {
 
     prefix = prefix.reverse();
 
+    console.log(prefix);
+
     while (prefix.length !== 0 && band) {
         let operator1 = 0, operator2 = 0, operating = 0;
         for (let i = 0; i < prefix.length; i++) {

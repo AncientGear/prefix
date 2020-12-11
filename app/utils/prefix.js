@@ -18,7 +18,7 @@ function hierarchy(operator) {
     }else if( operator.match(/(^(?!.)*)(\*|\/|\%)(?!.)/)){
         resp = 5;
     }else if( operator.match(/^[\=]$/)){
-        resp = 0    ;
+        resp = 0;
     }
 
     return resp;
@@ -57,6 +57,7 @@ function toPrefix(lexemes) {
         index !== ')' && stack.push(index);
     }
     let results = stack.reverse();
+
     return results;
 }
 
